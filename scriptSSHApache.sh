@@ -176,4 +176,4 @@ done
 clear
 echo "mot de passe bdd validé : $userBddIp"
 
-/root/_perso_bash/scriptApache.sh $userApache $userPass $userBdd $userBddPass $userBddIp
+bash /root/_perso_bash/scriptApache.sh $userApache $userPass $userBdd $userBddPass $userBddIp

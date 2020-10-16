@@ -120,7 +120,7 @@ flush privileges;"
 
 ssh-keygen -t ed25519
 sshMariadb=$(cat /home/$userApache/.ssh/id_ed25519.pub)
-ssh root@$userApacheIp $sshMariadb >> /home/$userApache/.ssh/authorized_keys
+ssh root@$userApacheIp sudo $sshMariadb >> /home/$userApache/.ssh/authorized_keys
 
 clear
 echo "script terminé, veuillez executé le script 'restart.sh' , via /home/$userBdd/restart.sh"
