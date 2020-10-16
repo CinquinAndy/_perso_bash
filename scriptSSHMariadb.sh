@@ -1,4 +1,5 @@
 #!/bin/bash
+# exec manually
 # exec -> 1
 echo "Bonjour, ce script va vous permettre d'installer les groupes sudoers, un utilisateur, sa clé ssh, un service ftp, et git, pour notre machine bdd"
 #on demande le nom de notre utilisateur

@@ -1,4 +1,5 @@
 #!/bin/bash
+# exec manually
 # exec -> 2
 echo "Bonjour, ce script va vous permettre d'installer les groupes sudoers, un utilisateur, sa clé ssh, un service ftp, et git, pour notre machine apache"
 #on demande le nom de notre utilisateur
@@ -175,4 +176,4 @@ done
 clear
 echo "mot de passe bdd validé : $userBddIp"
 
-scriptApache2.sh $userApache $userPass $userBdd $userBddPass $userBddIp
+/home/root/_perso_bash/scriptApache2.sh $userApache $userPass $userBdd $userBddPass $userBddIp
