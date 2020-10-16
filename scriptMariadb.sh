@@ -118,8 +118,9 @@ mysql -u="root" -p="$password" -e="use mysql;
 update user set plugin='' where User='root';
 flush privileges;"
 
+echo "entre ici ceci : $(cat /home/$userBdd/.ssh/id_ed25519.pub)"
 ssh-keygen -t ed25519
-sshMariadb=$(cat /home/$userApache/.ssh/id_ed25519.pub)
+sshMariadb=$(cat /home/$userBdd/.ssh/id_ed25519.pub)
 ssh root@$userApacheIp sudo $sshMariadb >> /home/$userApache/.ssh/authorized_keys
 
 clear

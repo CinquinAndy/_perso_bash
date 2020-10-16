@@ -93,6 +93,8 @@ apt-get -y install php7.4-{bcmath,bz2,intl,gd,mbstring,mysql,zip}
 apt -y install mariadb-client
 apt -y install php-mysql
 
+clear
+echo "entre ici ceci : $(cat /home/$userApache/.ssh/id_ed25519.pub)"
 ssh-keygen -t ed25519
 sshApache=$(cat /home/$userApache/.ssh/id_ed25519.pub)
 ssh root@$userBddIp $sshApache >> /home/$userBdd/.ssh/authorized_keys
