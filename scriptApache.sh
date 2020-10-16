@@ -96,6 +96,6 @@ apt -y install php-mysql
 ssh-keygen -t ed25519
 sshApache=$(cat /home/$userApache/.ssh/id_ed25519.pub)
 ssh root@$userBddIp $sshApache >> /home/$userBdd/.ssh/authorized_keys
-ssh root@$userBddIp /home/root/_perso_bash/scriptMariadb.sh $userApache $userApachePass $userBdd $userBddPass $userBddIp
+ssh root@$userBddIp /root/_perso_bash/scriptMariadb.sh $userApache $userApachePass $userBdd $userBddPass $userBddIp
 clear
 echo "script terminé, veuillez executé le script 'restart.sh' , via /home/$userApache/_perso_bash/restart.sh"
