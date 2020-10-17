@@ -7,9 +7,9 @@ valid=true
 while [ $valid ]
 do
 	clear
-	echo "Quel sera le nom de votre utilisateur sudo ?"
+	echo "Quel est le nom de votre utilisateur (machine mariadb) ?"
 	read userMariadb
-	echo "utilisateur sudo entrer : $userMariadb"
+	echo "utilisateur entrer : $userMariadb"
 	echo "cela vous convient-il ? y(oui)/n(non)"
 	read validation
 	if [ $validation == 'y' ] || [ $validation == 'Y' ];
@@ -70,15 +70,15 @@ apt install vsftpd -y
 if [ $(id -u) -eq 0 ]; then
 	egrep "^$userMariadb" /etc/passwd >/dev/null
 	if [ $? -eq 0 ]; then
-		echo "$userMariadb exists!"
+		echo "$userMariadb existe déjà"
 		exit 1
 	else
 		pass=$(perl -e 'print crypt($ARGV[0], "password")' $userpass)
 		useradd -m -p "$pass" "$userMariadb"
-		[ $? -eq 0 ] && echo "User has been added to system!" || echo "Failed to add a user!"
+		[ $? -eq 0 ] && echo "L'utilisateur à été créer" || echo "Une erreur est survenue"
 	fi
 else
-	echo "Only root may add a user to the system."
+	echo "Il n'y a que root qui peux rajouté un utilisateur !"
 exit 2
 fi
 

@@ -70,15 +70,15 @@ apt install vsftpd -y
 if [ $(id -u) -eq 0 ]; then
 	egrep "^$userApache" /etc/passwd >/dev/null
 	if [ $? -eq 0 ]; then
-		echo "$userApache exists!"
+		echo "$userApache existe déjà !"
 		exit 1
 	else
 		pass=$(perl -e 'print crypt($ARGV[0], "password")' $userPass)
 		useradd -m -p "$pass" "$userApache"
-		[ $? -eq 0 ] && echo "User has been added to system!" || echo "Failed to add a user!"
+		[ $? -eq 0 ] && echo "L'utilisateur à été créer" || echo "Une erreur est survenue"
 	fi
 else
-	echo "Only root may add a user to the system."
+	echo "Il y a que root qui peux ajouté un utilisateur au systeme"
 exit 2
 fi
 
@@ -129,7 +129,7 @@ allow_writeable_chroot=YES" > /etc/vsftpd.conf
 while [ $valid ]
 do
 	clear
-	echo "Quel est le nom de votre utilisateur de Bdd ?"
+	echo "Quel est le nom de l'utilisateur de la machine mariaDB' ?"
 	read userBdd
 	echo "utilisateur bdd entrer : $userBdd"
 	echo "cela vous convient-il ? y(oui)/n(non)"
@@ -146,7 +146,7 @@ echo "utilisateur bdd validé : $userBdd"
 while [ $valid ]
 do
 	clear
-	echo "Quel sera le mot de passe de votre utilisateur de Bdd ?"
+	echo "Quel sera le mot de passe utilisateur de la machine mariaDB ?"
 	read userBddPass
 	echo "mdp entrer : $userBddPass"
 	echo "cela vous convient-il ? y(oui)/n(non)"

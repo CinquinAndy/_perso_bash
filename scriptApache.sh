@@ -94,10 +94,11 @@ apt -y install mariadb-client
 apt -y install php-mysql
 
 clear
-echo "entre ici ceci : /home/$userApache/.ssh/)"
+echo "entre ici ceci : "
+echo "/home/$userApache/.ssh/id_ed25519)"
 ssh-keygen -t ed25519
 sshApache=$(cat /home/$userApache/.ssh/id_ed25519.pub)
-ssh $userBdd@$userBddIp "sudo -S echo "$sshApache" >> /home/$userBdd/.ssh/authorized_keys"
-ssh $userBdd@$userBddIp "sudo -S bash /root/_perso_bash/scriptMariadb.sh $userApache $userApachePass $userBdd $userBddPass $userBddIp"
+ssh $userBdd@$userBddIp "echo $userApachePass | sudo -S echo "$sshApache" >> /home/$userBdd/.ssh/authorized_keys"
+ssh $userBdd@$userBddIp "echo $userApachePass | sudo -S bash /root/_perso_bash/scriptMariadb.sh $userApache $userApachePass $userBdd $userBddPass $userBddIp"
 
 echo "script terminé, veuillez executé le script 'restart.sh' , via /home/$userApache/_perso_bash/restart.sh"

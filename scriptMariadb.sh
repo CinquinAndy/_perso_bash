@@ -13,9 +13,6 @@ clear
 echo "repondez 'y' sur chaque réponse après votre mot de passe root de base de donnée"
 /usr/bin/mysql_secure_installation
 
-valid=true
-while [ $valid ]
-do
 validation=true
 clear
 echo "Avez vous une base de donnée existante à importer et le script dans le systeme ? (y)oui"
@@ -34,14 +31,16 @@ then
 			break
 		fi
 	done
+else
+	echo "Ok, pas d'importation !"
 fi
-done
 clear
 
+valid=true
 while [ $valid ]
 do
 	clear
-echo "Quel est le nom de votre Base de donnée ?"
+echo "Quel est le nom de la Base de donnée ?"
 read bddName
 echo "Nom entrer : $bddName"
 echo "cela vous convient-il ? y(oui)/n(non)"
@@ -57,7 +56,7 @@ echo "nom de site validé : $bddName"
 while [ $valid ]
 do
 	clear
-echo "Quel est le nom de votre utilisateur de Base de donnée ?"
+echo "Quel est le nom de l'utilisateur de la Base de donnée ?"
 read bddUserName
 echo "Nom entrer : $bddUserName"
 echo "cela vous convient-il ? y(oui)/n(non)"
@@ -73,7 +72,7 @@ echo "nom d'utilisateur validé : $bddUserName"
 while [ $valid ]
 do
 	clear
-echo "Quel est le mdp de votre Base de donnée ?"
+echo "Quel est le mdp de l'utilisateur de la Base de donnée ?"
 read bddUserPass
 echo "Nom entrer : $bddUserPass"
 echo "cela vous convient-il ? y(oui)/n(non)"
@@ -121,6 +120,6 @@ flush privileges;"
 echo "entre ici ceci : $(cat /home/$userBdd/.ssh/)"
 ssh-keygen -t ed25519
 sshMariadb=$(cat /home/$userBdd/.ssh/id_ed25519.pub)
-ssh $userApache@$userApacheIp "sudo -S echo "$sshMariadb" >> /home/$userApache/.ssh/authorized_keys"
+ssh $userApache@$userApacheIp "echo $userApachePass | sudo -S echo "$sshMariadb" >> /home/$userApache/.ssh/authorized_keys"
 
 echo "script terminé, veuillez executé le script 'restart.sh' , via /home/$userBdd/restart.sh"
