@@ -43,10 +43,20 @@ do
 		fi
 done
 clear
+dir=/var/www
+if [[ ! -e $dir ]]
+then
+    mkdir /var/www
+elif [[ ! -d $dir ]]
+then
+    echo "$dir existe déjà mais ce n'est pas un dossier"
+else
+    echo "$dir existe déjà"
+fi
+cd /var/www/
 git clone $repo
 cd /
-$repoNameBuffer=$(echo $repo | sed -r 's/(\.git)$//')
-$repoName=$(echo $repo | sed 's/.*\///')
+$repoName=$(echo $repo | sed -r 's/(\.git)$//' | sed 's/.*\///')
 $userIp=$(hostname -I)
 
 echo "Nom validé : $websiteName"
@@ -98,7 +108,7 @@ echo "entre ici ceci : "
 echo "/home/$userApache/.ssh/id_ed25519)"
 ssh-keygen -t ed25519
 sshApache=$(cat /home/$userApache/.ssh/id_ed25519.pub)
-ssh $userBdd@$userBddIp "echo $userApachePass | sudo -S echo "$sshApache" >> /home/$userBdd/.ssh/authorized_keys"
-ssh $userBdd@$userBddIp "echo $userApachePass | sudo -S bash /root/_perso_bash/scriptMariadb.sh $userApache $userApachePass $userBdd $userBddPass $userBddIp"
+ssh $userBdd@$userBddIp "sudo -S echo $userApachePass | echo '$sshApache' >> /home/$userBdd/.ssh/authorized_keys"
+ssh $userBdd@$userBddIp "sudo -S echo $userApachePass | bash /root/_perso_bash/scriptMariadb.sh $userApache $userApachePass $userBdd $userBddPass $userBddIp"
 
-echo "script terminé, veuillez executé le script 'restart.sh' , via /home/$userApache/_perso_bash/restart.sh"
+echo "script terminé, veuillez executé le script 'restart.sh' , via /root/_perso_bash/restart.sh"

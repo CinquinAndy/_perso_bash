@@ -1,6 +1,7 @@
 #!/bin/bash
 # exec manually
 # exec -> 2
+cd /
 echo "Bonjour, ce script va vous permettre d'installer les groupes sudoers, un utilisateur, sa clé ssh, un service ftp, et git, pour notre machine apache"
 #on demande le nom de notre utilisateur
 valid=true
