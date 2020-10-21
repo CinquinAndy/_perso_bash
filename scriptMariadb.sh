@@ -58,7 +58,7 @@ done
 clear
 echo "nom de site validé : $userApacheIp"
 
-apt install mariadb-server
+apt install mariadb-server -y
 clear
 echo "repondez 'y' sur chaque réponse après votre mot de passe root de base de donnée"
 /usr/bin/mysql_secure_installation
@@ -135,6 +135,22 @@ then
 done
 clear
 echo "mot de passe utilisateur validé : $bddUserPass"
+
+while [ $valid ]
+do
+	clear
+echo "Quel est le mdp de root de la Base de donnée ?"
+read password
+echo "Nom entrer : $password"
+echo "cela vous convient-il ? y(oui)/n(non)"
+read validation
+if [ $validation == 'y' ] || [ $validation == 'Y' ];
+then
+	break
+	fi
+done
+clear
+echo "mot de passe root validé : $password"
 
 mysql -u="root" -p="$password" -e="CREATE DATABASE $bddName;
 create user if not exists $bddUserName@$bddName identified by '$bddUserPass';"
