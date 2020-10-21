@@ -15,11 +15,11 @@ echo "repondez 'y' sur chaque réponse après votre mot de passe root de base de
 /usr/bin/mysql_secure_installation
 
 valid=true
-bddPresente='n'
+bddPresente='x'
 clear
-echo "Avez vous une base de donnée existante à importer et le script dans le systeme ? (y)oui"
+echo "Avez vous une base de donnée existante à importer et le script dans le systeme ? (y)oui / (n)non"
 read bddPresente
-if [ $bddPresente == 'y' ] || [ $bddPresente == 'Y' ];
+if [ $bddPresente == 'y' ] || [ $bddPresente == 'Y' ] || [ $bddPresente == 'N' ] || [ $bddPresente == 'n' ];
 then
 	while [ $valid ]
 	do
@@ -89,7 +89,10 @@ echo "mot de passe utilisateur validé : $bddUserPass"
 
 mysql -u="root" -p="$password" -e="CREATE DATABASE $bddName;
 create user if not exists $bddUserName@$bddName identified by '$bddUserPass';"
-mysql -u="root" -p="$password" < $bddRoute
+if [ $bddPresente == 'y' ] || [ $bddPresente == 'Y' ];
+then
+	mysql -u="root" -p="$password" < $bddRoute
+fi
 
 ipaddr=$(hostname -I)
 echo "[server]
