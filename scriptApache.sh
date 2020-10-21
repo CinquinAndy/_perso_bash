@@ -108,7 +108,7 @@ echo "entre ici ceci : "
 echo "/home/$userApache/.ssh/id_ed25519)"
 ssh-keygen -t ed25519
 sshApache=$(cat /home/$userApache/.ssh/id_ed25519.pub)
-ssh $userBdd@$userBddIp "sudo -S echo $userApachePass | echo '$sshApache' >> /home/$userBdd/.ssh/authorized_keys"
-ssh $userBdd@$userBddIp "sudo -S echo $userApachePass | bash /root/_perso_bash/scriptMariadb.sh $userApache $userApachePass $userBdd $userBddPass $userBddIp"
+ssh $userBdd@$userBddIp "echo '$sshApache' >> /home/$userBdd/.ssh/authorized_keys"
+ssh $userBdd@$userBddIp "sudo bash /root/_perso_bash/scriptMariadb.sh $userApache $userApachePass $userBdd $userBddPass $userBddIp"
 
 echo "script terminé, veuillez executé le script 'restart.sh' , via /root/_perso_bash/restart.sh"
