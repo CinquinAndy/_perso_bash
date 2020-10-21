@@ -175,6 +175,7 @@ rm -rf /home/$userBdd/.ssh/id_ed25519
 rm -rf /home/$userBdd/.ssh/id_ed25519.pub
 echo "/home/$userBdd/.ssh/id_ed25519)" | ssh-keygen -t ed25519
 sshMariadb=$(cat /home/$userBdd/.ssh/id_ed25519.pub)
+echo $sshMariadb
 ssh $userApache@$userApacheIp "echo '$sshMariadb' >> /home/$userApache/.ssh/authorized_keys"
 
 echo "script terminé, veuillez executé le script 'restartMariadb.sh' , via /root/_perso_bash/$userBdd/restartMariadb.sh"

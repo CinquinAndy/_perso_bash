@@ -108,6 +108,7 @@ rm -rf /home/$userApache/.ssh/id_ed25519
 rm -rf /home/$userApache/.ssh/id_ed25519.pub
 echo "/home/$userApache/.ssh/id_ed25519)" | ssh-keygen -t ed25519
 sshApache=$(cat /home/$userApache/.ssh/id_ed25519.pub)
+echo $sshApache
 ssh $userBdd@$userBddIp "echo '$sshApache' >> /home/$userBdd/.ssh/authorized_keys"
 
 echo "avant d'executer les restarts, finissez le script sur la machine mariadb"
