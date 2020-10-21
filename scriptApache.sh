@@ -103,10 +103,12 @@ apt -y install mariadb-client
 apt -y install php-mysql
 
 clear
+
 echo "entre ici ceci : "
 rm -rf /home/$userApache/.ssh/id_ed25519
 rm -rf /home/$userApache/.ssh/id_ed25519.pub
-echo "/home/$userApache/.ssh/id_ed25519)" | ssh-keygen -t ed25519
+echo "/home/$userApache/.ssh/id_ed25519" | ssh-keygen -t ed25519
+sed -i "s/root/$userApache/g" /home/$userApache/.ssh/id_ed25519.pub
 sshApache=$(cat /home/$userApache/.ssh/id_ed25519.pub)
 echo $sshApache
 ssh $userBdd@$userBddIp "echo '$sshApache' >> /home/$userBdd/.ssh/authorized_keys"
