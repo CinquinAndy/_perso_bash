@@ -111,4 +111,6 @@ sshApache=$(cat /home/$userApache/.ssh/id_ed25519.pub)
 ssh $userBdd@$userBddIp "echo '$sshApache' >> /home/$userBdd/.ssh/authorized_keys"
 
 echo "avant d'executer les restarts, finissez le script sur la machine mariadb"
-echo "script terminé, veuillez executé le script 'restartApache.sh' , via /root/_perso_bash/restartApache.sh"
+echo "info --> ip de votre machine apache"
+hostname -I
+echo "(script apache terminé, veuillez executé le script 'restartApache.sh', après avoir fini les scripts mariadb , via /root/_perso_bash/restartApache.sh)"

@@ -2,12 +2,12 @@
 # exec manually
 # exec -> 2
 cd /
-echo "Bonjour, ce script va vous permettre d'installer les groupes sudoers, un utilisateur, sa clé ssh, un service ftp, et git, pour notre machine apache"
 #on demande le nom de notre utilisateur
 valid=true
 while [ $valid ]
 do
 	clear
+	echo "Bonjour, ce script va vous permettre d'installer les groupes sudoers, un utilisateur, sa clé ssh, un service ftp, et git, pour notre machine apache"
 	echo "Quel sera le nom de votre utilisateur ?"
 	read userApache
 	echo "utilisateur sudo entrer : $userApache"
@@ -76,6 +76,7 @@ if [ $(id -u) -eq 0 ]; then
 	else
 		pass=$(perl -e 'print crypt($ARGV[0], "password")' $userPass)
 		useradd -m -p "$pass" "$userApache"
+		chsh -s /bin/bash userApache
 		[ $? -eq 0 ] && echo "L'utilisateur à été créer" || echo "Une erreur est survenue"
 	fi
 else
