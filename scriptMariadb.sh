@@ -152,8 +152,9 @@ done
 clear
 echo "mot de passe root validé : $password"
 
-mysql -u "root" -p="$password" -e="CREATE DATABASE '$bddName';
+mysql -u "root" -p="$password" -e "CREATE DATABASE \`$bddName\`;
 create user if not exists '$bddUserName'@'$bddName' identified by '$bddUserPass';"
+
 if [ $bddPresente == 'y' ] || [ $bddPresente == 'Y' ];
 then
 	mysql -u "root" -p="$password" < $bddRoute
@@ -183,8 +184,8 @@ collation-server      = utf8mb4_general_ci
 [mariadb]
 [mariadb-10.3]" > /etc/mysql/mariadb.conf.d/50-server.cnf
 
-mysql -u "root" -p="$password" -e="use mysql;
-update user set plugin='' where User='root';
+mysql -u "root" -p="$password" -e "use \`mysql\`;
+update \`user\` set plugin='' where \`User\`='root';
 flush privileges;"
 
 rm -rf /home/$userBdd/.ssh/id_ed25519
