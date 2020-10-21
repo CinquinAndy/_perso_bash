@@ -14,6 +14,7 @@ echo "repondez 'y' sur chaque réponse après votre mot de passe root de base de
 /usr/bin/mysql_secure_installation
 
 validation=true
+bddPresente='n'
 clear
 echo "Avez vous une base de donnée existante à importer et le script dans le systeme ? (y)oui"
 read bddPresente
