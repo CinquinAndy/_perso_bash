@@ -74,8 +74,7 @@ if [ $(id -u) -eq 0 ]; then
 		exit 1
 	else
 		pass=$(perl -e 'print crypt($ARGV[0], "password")' $userpass)
-		useradd -m -p "$pass" "$userMariadb"
-		chsh -s /bin/bash userMariadb
+		useradd -m -p "$pass" "$userMariadb" --shell /bin/bash
 		[ $? -eq 0 ] && echo "L'utilisateur à été créer" || echo "Une erreur est survenue"
 	fi
 else

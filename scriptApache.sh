@@ -109,6 +109,13 @@ rm -rf /home/$userApache/.ssh/id_ed25519
 rm -rf /home/$userApache/.ssh/id_ed25519.pub
 echo "/home/$userApache/.ssh/id_ed25519" | ssh-keygen -t ed25519
 sed -i "s/root/$userApache/g" /home/$userApache/.ssh/id_ed25519.pub
+
+chown $userApache:$userApache /home/$userApache/.ssh/id_ed25519
+chown $userApache:$userApache /home/$userApache/.ssh/id_ed25519.pub
+
+chmod 600 /home/$userApache/.ssh/id_ed25519
+chmod 600 /home/$userApache/.ssh/id_ed25519.pub
+
 sshApache=$(cat /home/$userApache/.ssh/id_ed25519.pub)
 echo $sshApache
 ssh $userBdd@$userBddIp "echo '$sshApache' >> /home/$userBdd/.ssh/authorized_keys"

@@ -192,6 +192,14 @@ rm -rf /home/$userBdd/.ssh/id_ed25519
 rm -rf /home/$userBdd/.ssh/id_ed25519.pub
 echo "/home/$userBdd/.ssh/id_ed25519" | ssh-keygen -t ed25519
 sed -i "s/root/$userBdd/g" /home/$userBdd/.ssh/id_ed25519.pub
+
+chown $userBdd:$userBdd /home/$userBdd/.ssh/id_ed25519
+chown $userBdd:$userBdd /home/$userBdd/.ssh/id_ed25519.pub
+
+chmod 600 /home/$userBdd/.ssh/id_ed25519
+chmod 600 /home/$userBdd/.ssh/id_ed25519.pub
+
+
 sshMariadb=$(cat /home/$userBdd/.ssh/id_ed25519.pub)
 echo $sshMariadb
 ssh $userApache@$userApacheIp "echo '$sshMariadb' >> /home/$userApache/.ssh/authorized_keys"
