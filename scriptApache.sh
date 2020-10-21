@@ -6,8 +6,7 @@ echo "Bonjour, ce script va vous permettre d'installer apache et toutes les conf
 userApache=$1
 userApachePass=$2
 userBdd=$3
-userBddPass=$4
-userBddIp=$5
+userBddIp=$4
 
 apt install apache2 -y
 apt install apache2-doc -y
@@ -105,10 +104,11 @@ apt -y install php-mysql
 
 clear
 echo "entre ici ceci : "
-echo "/home/$userApache/.ssh/id_ed25519)"
-ssh-keygen -t ed25519
+rm -rf /home/$userApache/.ssh/id_ed25519
+rm -rf /home/$userApache/.ssh/id_ed25519.pub
+echo "/home/$userApache/.ssh/id_ed25519)" | ssh-keygen -t ed25519
 sshApache=$(cat /home/$userApache/.ssh/id_ed25519.pub)
 ssh $userBdd@$userBddIp "echo '$sshApache' >> /home/$userBdd/.ssh/authorized_keys"
-ssh $userBdd@$userBddIp "echo '$userBddPass' | sudo -S bash /root/_perso_bash/scriptMariadb.sh $userApache $userApachePass $userBdd $userBddPass $userBddIp"
 
-echo "script terminé, veuillez executé le script 'restart.sh' , via /root/_perso_bash/restart.sh"
+echo "avant d'executer les restarts, finissez le script sur la machine mariadb"
+echo "script terminé, veuillez executé le script 'restartApache.sh' , via /root/_perso_bash/restartApache.sh"

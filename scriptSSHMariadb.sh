@@ -125,3 +125,6 @@ rsa_private_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
 ssl_enable=NO
 
 allow_writeable_chroot=YES" > /etc/vsftpd.conf
+
+userBddIp=$(hostname -I)
+bash /root/_perso_bash/scriptMariadb.sh $userBdd $userpass $userBddIp

@@ -8,7 +8,7 @@ valid=true
 while [ $valid ]
 do
 	clear
-	echo "Quel sera le nom de votre utilisateur sudo ?"
+	echo "Quel sera le nom de votre utilisateur ?"
 	read userApache
 	echo "utilisateur sudo entrer : $userApache"
 	echo "cela vous convient-il ? y(oui)/n(non)"
@@ -130,7 +130,7 @@ allow_writeable_chroot=YES" > /etc/vsftpd.conf
 while [ $valid ]
 do
 	clear
-	echo "Quel est le nom de l'utilisateur de la machine mariaDB' ?"
+	echo "Quel est le nom de l'utilisateur de la machine mariaDB ?"
 	read userBdd
 	echo "utilisateur bdd entrer : $userBdd"
 	echo "cela vous convient-il ? y(oui)/n(non)"
@@ -142,23 +142,6 @@ do
 done
 clear
 echo "utilisateur bdd validé : $userBdd"
-
-# puis son mot de passe
-while [ $valid ]
-do
-	clear
-	echo "Quel sera le mot de passe utilisateur de la machine mariaDB ?"
-	read userBddPass
-	echo "mdp entrer : $userBddPass"
-	echo "cela vous convient-il ? y(oui)/n(non)"
-	read validation
-	if [ $validation == 'y' ] || [ $validation == 'Y' ];
-	then
-		break
-	fi
-done
-clear
-echo "mot de passe bdd validé : $userBddPass"
 
 # et enfin son ip
 while [ $valid ]
@@ -175,6 +158,6 @@ do
 	fi
 done
 clear
-echo "mot de passe bdd validé : $userBddIp"
+echo "Ip de la bdd validé : $userBddIp"
 
-bash /root/_perso_bash/scriptApache.sh $userApache $userPass $userBdd $userBddPass $userBddIp
+bash /root/_perso_bash/scriptApache.sh $userApache $userPass $userBdd $userBddIp

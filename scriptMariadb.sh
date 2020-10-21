@@ -1,20 +1,69 @@
 #!/bin/bash
-#exec by #3
-[[ $- == *i* ]] && stty -ixon
+#exec #4
+userBdd=$1
+userBddPass=$2
+userBddIp=$3
+
 echo "Bonjour, ce script va vous permettre d'installer MariaDB et toutes les configurations nécessaires à son fonctionnement"
-userApache=$1
-userApachePass=$2
-userBdd=$3
-userBddPass=$4
-userBddIp=$5
-userApacheIp=$6
+
+valid=true
+while [ $valid ]
+do
+	clear
+echo "avant de poursuivre ce script sur cette machine, terminé les deux scripts sur la machine apache, (executer scriptApache.sh)"
+echo "info --> ip de votre machine mariadb"
+hostname -I
+echo "Quel est le nom de l'utilisateur sur la machine apache ?"
+read userApache
+echo "Nom entrer : $userApache"
+echo "cela vous convient-il ? y(oui)/n(non)"
+read validation
+if [ $validation == 'y' ] || [ $validation == 'Y' ];
+then
+	break
+	fi
+done
+clear
+echo "nom d'utilisateur validé : $userApache"
+
+while [ $valid ]
+do
+	clear
+echo "Quel est le mot de passe de votre utilisateur sur la machine apache ?"
+read userApachePass
+echo "Nom entrer : $userApachePass"
+echo "cela vous convient-il ? y(oui)/n(non)"
+read validation
+if [ $validation == 'y' ] || [ $validation == 'Y' ];
+then
+	break
+	fi
+done
+clear
+echo "nom de site validé : $userApachePass"
+
+while [ $valid ]
+do
+	clear
+echo "Quel est l'ip de la machine apache ?"
+read userApacheIp
+echo "Ip entrer : $userApacheIp"
+echo "cela vous convient-il ? y(oui)/n(non)"
+read validation
+if [ $validation == 'y' ] || [ $validation == 'Y' ];
+then
+	break
+	fi
+done
+clear
+echo "nom de site validé : $userApacheIp"
 
 apt install mariadb-server
 clear
 echo "repondez 'y' sur chaque réponse après votre mot de passe root de base de donnée"
 /usr/bin/mysql_secure_installation
 
-valid=true
+
 bddPresente='x'
 clear
 echo "Avez vous une base de donnée existante à importer et le script dans le systeme ? (y)oui / (n)non"
@@ -122,9 +171,10 @@ mysql -u="root" -p="$password" -e="use mysql;
 update user set plugin='' where User='root';
 flush privileges;"
 
-echo "entre ici ceci : $(cat /home/$userBdd/.ssh/)"
-ssh-keygen -t ed25519
+rm -rf /home/$userBdd/.ssh/id_ed25519
+rm -rf /home/$userBdd/.ssh/id_ed25519.pub
+echo "/home/$userBdd/.ssh/id_ed25519)" | ssh-keygen -t ed25519
 sshMariadb=$(cat /home/$userBdd/.ssh/id_ed25519.pub)
 ssh $userApache@$userApacheIp "echo '$sshMariadb' >> /home/$userApache/.ssh/authorized_keys"
 
-echo "script terminé, veuillez executé le script 'restart.sh' , via /root/_perso_bash/$userBdd/restart.sh"
+echo "script terminé, veuillez executé le script 'restartMariadb.sh' , via /root/_perso_bash/$userBdd/restartMariadb.sh"
