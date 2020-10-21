@@ -1,5 +1,6 @@
 #!/bin/bash
 #exec by #3
+[[ $- == *i* ]] && stty -ixon
 echo "Bonjour, ce script va vous permettre d'installer MariaDB et toutes les configurations nécessaires à son fonctionnement"
 userApache=$1
 userApachePass=$2
