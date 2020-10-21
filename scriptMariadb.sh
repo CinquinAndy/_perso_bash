@@ -13,14 +13,14 @@ clear
 echo "repondez 'y' sur chaque réponse après votre mot de passe root de base de donnée"
 /usr/bin/mysql_secure_installation
 
-validation=true
+valid=true
 bddPresente='n'
 clear
 echo "Avez vous une base de donnée existante à importer et le script dans le systeme ? (y)oui"
 read bddPresente
 if [ $bddPresente == 'y' ] || [ $bddPresente == 'Y' ];
 then
-	while [ $validation ]
+	while [ $valid ]
 	do
 		echo "Quel est le chemin vers la base de donnée ? (/data/script.sql)"
 		read bddRoute
@@ -37,7 +37,7 @@ else
 fi
 clear
 
-valid=true
+
 while [ $valid ]
 do
 	clear
