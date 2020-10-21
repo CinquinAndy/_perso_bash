@@ -16,3 +16,6 @@ on execute scriptSSHApache.sh , sur la machine apache
 Puis on suis les indications  
 on execute restartApache.sh , sur la machine apache  
 on execute restartMariadb.sh , sur la machine mariadb  
+  
+Cadeau un tuto pour l'utilisé :D ♥  
+https://youtu.be/ishTzMWHEBs

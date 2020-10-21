@@ -153,7 +153,9 @@ clear
 echo "mot de passe root validé : $password"
 
 mysql -u "root" -p="$password" -e "CREATE DATABASE \`$bddName\`;
-create user if not exists '$bddUserName'@'$bddName' identified by '$bddUserPass';"
+create user if not exists '$bddUserName'@'%' identified by '$bddUserPass';
+GRANT ALL PRIVILEGES ON *.* TO '$bddUserName'@'%';
+flush privileges;"
 
 if [ $bddPresente == 'y' ] || [ $bddPresente == 'Y' ];
 then
