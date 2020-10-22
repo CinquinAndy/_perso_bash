@@ -23,11 +23,10 @@ ${IPT} -A INPUT -i lo -j ACCEPT
 echo "[accept established / related]"
 ${IPT} -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 
-
-# Autoriser la connexion SSH, en input seulement, (notre machine ne pourras allez se connecter en ssh sur une autre machine)
+# Autoriser la connexion SSH
 echo "[accept ssh]"
 ${IPT} -A INPUT -p tcp -m tcp -m conntrack --ctstate NEW,ESTABLISHED --dport 22 -j ACCEPT
-${IPT} -A INPUT -p tcp -m tcp -m conntrack --ctstate NEW,ESTABLISHED --sport 22 -j ACCEPT
+${IPT} -A OUTPUT -p tcp -m tcp -m conntrack --ctstate NEW,ESTABLISHED --sport 22 -j ACCEPT
 
 # Autoriser HTTP, notre machine accepte les connexions http
 echo "[accept http]"
@@ -55,8 +54,9 @@ ${IPT} -A LOGICMP -p icmp -m hashlimit --hashlimit 2/sec --hashlimit-mode dstip,
 # exercice 5 - on log les pings qui sont passés
 ${IPT} -A LOGICMP -p icmp -j LOG --log-prefix "iptables drop requests " --log-level warning
 # puis on drop le tout après avoir
+${IPT} -A OUTPUT -p icmp -j ACCEPT
 ${IPT} -A LOGICMP -j DROP
-${IPT} -P INPUT DROP
+
 # Les règles de filtrage par nombre de ping sont utiles seulement dans le cas où nous avons besoin d’avoir ce protocole autorisé, et qu’on en as l’utilité, usuellement, on n’en a pas besoin dans la plupart des cas.
 # il faudra donc tout simplement drop le protocole ICMP (voir la partie 6 dans la suite des règles )
 # Politique par défaut de la table INPUT : DROP. (Bloquer tout le reste).
@@ -143,3 +143,6 @@ ${IPT} -A port-scanning -j DROP
 # https://stackoverflow.com/questions/27173562/iptables-limit-the-number-of-logged-packets-second
 # http://dennisk.freeshell.org/cis240dl_ping_flood.mkd.html
 # https://geekeries.org/2017/12/configuration-avancee-du-firewall-iptables/?cn-reloaded=1
+
+### on drop le reste
+${IPT} -P INPUT DROP
