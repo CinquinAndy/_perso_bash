@@ -149,7 +149,7 @@ do
 	clear
 	echo "Quel est l'ip de votre machine Bdd ?"
 	read userBddIp
-	echo "mdp entrer : $userBddIp"
+	echo "Ip entrer : $userBddIp"
 	echo "cela vous convient-il ? y(oui)/n(non)"
 	read validation
 	if [ $validation == 'y' ] || [ $validation == 'Y' ];

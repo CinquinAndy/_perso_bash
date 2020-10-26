@@ -33,7 +33,7 @@ do
 	clear
 	echo "Quel est le lien (url https) de votre repos git ?"
 	read repo
-	echo "Nom entrer : $repo"
+	echo "Url entrer : $repo"
 	echo "cela vous convient-il ? y(oui)/n(non)"
 	read validation
 		if [ $validation == 'y' ] || [ $validation == 'Y' ];
@@ -55,19 +55,18 @@ fi
 cd /var/www/
 git clone $repo
 cd /
-$repoName=$(echo $repo | sed -r 's/(\.git)$//' | sed 's/.*\///')
-$userIp=$(hostname -I)
+repoName=$(echo $repo | sed -r 's/(\.git)$//' | sed 's/.*\///')
+userIp=$(hostname -I)
 
 echo "Nom validé : $websiteName"
 echo "<VirtualHost *:80>
 #ServerName $websiteName
 ServerAdmin $userApache@localhost
-DocumentRoot /var/www/$repoName
 
 ErrorLog ${APACHE_LOG_DIR}/$websiteName.log
 CustomLog ${APACHE_LOG_DIR}/$websiteName.log combined
 
-Redirect / https://$userIp:443
+Redirect permanent / https://$userIp
 </VirtualHost>" > /etc/apache2/sites-available/$websiteName.conf
 
 echo "<VirtualHost *:443>

@@ -72,6 +72,16 @@ ${IP} -t mangle -A PREROUTING -s 10.0.0.0/8 -i lo -j ACCEPT
 ${IP} -t mangle -A PREROUTING -s 0.0.0.0/8 -i lo -j ACCEPT
 ${IP} -t mangle -A PREROUTING -s 240.0.0.0/5 -i lo -j ACCEPT
 ${IP} -t mangle -A PREROUTING -s 127.0.0.0/8 -i lo -j ACCEPT
+# on bloque les ip privée pour notre interface qui sera face à internet, (on évite le spoofing)
+${IP} -t mangle -A PREROUTING -s 224.0.0.0/3 -i interface -j DROP
+${IP} -t mangle -A PREROUTING -s 169.254.0.0/16 -i interface -j DROP
+${IP} -t mangle -A PREROUTING -s 172.16.0.0/12 -i interface -j DROP
+${IP} -t mangle -A PREROUTING -s 192.0.2.0/24 -i interface -j DROP
+${IP} -t mangle -A PREROUTING -s 192.168.0.0/16 -i interface -j DROP
+${IP} -t mangle -A PREROUTING -s 10.0.0.0/8 -i interface -j DROP
+${IP} -t mangle -A PREROUTING -s 0.0.0.0/8 -i interface -j DROP
+${IP} -t mangle -A PREROUTING -s 240.0.0.0/5 -i interface -j DROP
+${IP} -t mangle -A PREROUTING -s 127.0.0.0/8 -i interface -j DROP
 
 ### 0: règles de bases :
 # Autoriser les flux en localhost
@@ -166,7 +176,6 @@ do
     fi
 done
 
-
 ### Régles 'bonus'
 ### 1: Drop les paquets invalids, qui ne sont pas SYN et qui ne mene a aucune connexion tcp établie (established)### 
 echo "[drop invalid packets]"
@@ -207,20 +216,17 @@ ${IP} -A INPUT -s 104.236.0.0/16 -j DROP
 ${IP} -A INPUT -s 104.248.0.0/16 -j DROP
 ${IP} -A INPUT -s 107.170.0.0/16 -j DROP
 ${IP} -A INPUT -s 128.199.0.0/16 -j DROP
-${IP} -A INPUT -s 134.122.0.0/16 -j DROP
-${IP} -A INPUT -s 134.209.0.0/16 -j DROP
-${IP} -A INPUT -s 138.197.0.0/16 -j DROP
 ${IP} -A INPUT -s 138.68.0.0/16 -j DROP
+${IP} -A INPUT -s 134.122.0.0/16 -j DROP
+${IP} -A INPUT -s 138.197.0.0/16 -j DROP
+${IP} -A INPUT -s 134.209.0.0/16 -j DROP
 
 ### on drop le reste - (on fini par ça)
 ${IP} -P INPUT -i $interface DROP
 
-
 # Sauvegarde & persistance des tables 
 apt install iptables-persistent -y
 ${IP}-save > /etc/iptables/rules.v4
-
-
 
 # step 2 : 
 # -> parsage des logs et exports bdd
@@ -228,3 +234,8 @@ ${IP}-save > /etc/iptables/rules.v4
 echo 'nbVisite,ipSource' > TODOCHANGE.csv  | cat /var/log/apache2/tutorataccess.log | awk -F '[ ]+' '/^/ {print $1}' | sort -r | uniq -c | sort -rn | sed 's/^[ ]*//' >> TODOCHANGE.csv
 # Les URLs visitées le plus souvent
 echo 'nbVisite,adresseCible' > TODOCHANGE.csv | cat /var/log/apache2/tutorataccess.log | awk -F '["]+' '/ / {print $4}' | sort -n | uniq -c | egrep 'http' | sort -rn | sed 's/^[ ]*//' | sed 's/[ ]/,/g' >> TODOCHANGE.csv
+
+# todo mettre en place les variables nécessaires (mot de passe / nom de bdd, etc etc)
+# sur la machine bdd -> 
+mysql -u root -p"1heksn?yr" adventofcode -e"select * from \`2015\`;" | sed "s/'/\'/;s/\t/\",\"/g;s/^/\"/;s/$/\"/;s/\n//g" > exportbdd.csv
+scp exportbdd.csv  userapache@192.168.164.139:/home/userapache/

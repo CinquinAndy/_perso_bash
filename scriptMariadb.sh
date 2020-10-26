@@ -10,9 +10,14 @@ valid=true
 while [ $valid ]
 do
 	clear
-echo "avant de poursuivre ce script sur cette machine, terminé les deux scripts sur la machine apache, (executer scriptApache.sh)"
+echo "AVANT DE POURSUIVRE CE SCRIPT SUR CETTE MACHINE, TERMINÉ LE SCRIPT SUR LA MACHINE APACHE, (scriptSSHApache.sh)"
+echo "AVANT DE POURSUIVRE CE SCRIPT SUR CETTE MACHINE, TERMINÉ LE SCRIPT SUR LA MACHINE APACHE, (scriptSSHApache.sh)"
+echo "AVANT DE POURSUIVRE CE SCRIPT SUR CETTE MACHINE, TERMINÉ LE SCRIPT SUR LA MACHINE APACHE, (scriptSSHApache.sh)"
+echo "AVANT DE POURSUIVRE CE SCRIPT SUR CETTE MACHINE, TERMINÉ LE SCRIPT SUR LA MACHINE APACHE, (scriptSSHApache.sh)"
+echo "AVANT DE POURSUIVRE CE SCRIPT SUR CETTE MACHINE, TERMINÉ LE SCRIPT SUR LA MACHINE APACHE, (scriptSSHApache.sh)"
 echo "info --> ip de votre machine mariadb"
 hostname -I
+echo "AVANT DE POURSUIVRE CE SCRIPT SUR CETTE MACHINE, TERMINÉ LE SCRIPT SUR LA MACHINE APACHE, (scriptSSHApache.sh)"
 echo "Quel est le nom de l'utilisateur sur la machine apache ?"
 read userApache
 echo "Nom entrer : $userApache"
@@ -31,7 +36,7 @@ do
 	clear
 echo "Quel est le mot de passe de votre utilisateur sur la machine apache ?"
 read userApachePass
-echo "Nom entrer : $userApachePass"
+echo "Mdp entrer : $userApachePass"
 echo "cela vous convient-il ? y(oui)/n(non)"
 read validation
 if [ $validation == 'y' ] || [ $validation == 'Y' ];
@@ -40,7 +45,7 @@ then
 	fi
 done
 clear
-echo "nom de site validé : $userApachePass"
+echo "Mdp validé : $userApachePass"
 
 while [ $valid ]
 do
@@ -67,12 +72,14 @@ echo "repondez 'y' sur chaque réponse après votre mot de passe root de base de
 bddPresente='x'
 clear
 echo "Avez vous une base de donnée existante à importer et le script dans le systeme ? (y)oui / (n)non"
+echo "(Vous pouvez MAINTENANT, vous connecter via FTP à votre machine, (mariaDB), afin de mettre le fichier de script d'importation de base de donnée dans la machine)"
+echo "Utilisez FileZila, votre explorateur de fichier, ou même un navigateur..."
 read bddPresente
 if [ $bddPresente == 'y' ] || [ $bddPresente == 'Y' ] || [ $bddPresente == 'N' ] || [ $bddPresente == 'n' ];
 then
 	while [ $valid ]
 	do
-		echo "Quel est le chemin vers la base de donnée ? (/data/script.sql)"
+		echo "Quel est le chemin vers la base de donnée ? (EXEMPLE : /data/script.sql)"
 		read bddRoute
 		echo "Nom entrer : $bddRoute"
 		echo "cela vous convient-il ? y(oui)/n(non)"
@@ -125,7 +132,7 @@ do
 	clear
 echo "Quel est le mdp de l'utilisateur de la Base de donnée ?"
 read bddUserPass
-echo "Nom entrer : $bddUserPass"
+echo "Mdp entrer : $bddUserPass"
 echo "cela vous convient-il ? y(oui)/n(non)"
 read validation
 if [ $validation == 'y' ] || [ $validation == 'Y' ];
@@ -141,7 +148,7 @@ do
 	clear
 echo "Quel est le mdp de root de la Base de donnée ?"
 read password
-echo "Nom entrer : $password"
+echo "Mdp entrer : $password"
 echo "cela vous convient-il ? y(oui)/n(non)"
 read validation
 if [ $validation == 'y' ] || [ $validation == 'Y' ];
