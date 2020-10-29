@@ -87,10 +87,10 @@ openssl req -new -x509 -days 365 -nodes -out /etc/ssl/certs/$websiteName.crt -ke
 chmod 440 /etc/ssl/private/$websiteName.key
 a2enmod ssl
 cd /var/www
-a2dissite /etc/apache2/sites-available/000-default.conf
-a2dissite /etc/apache2/sites-available/default-ssl.conf
-a2ensite /etc/apache2/sites-available/$websiteName.conf
-a2ensite /etc/apache2/sites-available/$websiteName-ssl.conf
+a2dissite 000-default.conf
+a2dissite default-ssl.conf
+a2ensite $websiteName.conf
+a2ensite $websiteName-ssl.conf
 
 apt -y install lsb-release apt-transport-https ca-certificates 
 wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
