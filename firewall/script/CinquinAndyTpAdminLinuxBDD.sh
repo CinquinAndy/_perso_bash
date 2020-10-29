@@ -1,6 +1,6 @@
 #!/bin/bash
 # Cinquin Andy, B2C1
-# Firewall IPTABLES - TP - Admin linux
+# Firewall IPTABLES - TP - Admin linux - BDD
 IP="iptables"
 
 echo "[paramètres : tous les ports ouvert de la machine]"
@@ -9,15 +9,6 @@ for i in ${@}
 do
     echo "ports : $i"
 done
-
-#Quels ports allons-nous autoriser sur l'interface réseau WAN de chaque VM et pourquoi?
-# -> nous allons ouvrir les ports 22 (ssh), 53 (dns), sur les deux machine
-# -> puis 80 & 443 (http/https), sur la machine web (pour être capable d'accéder a nos sites) - machine web sur apache
-# -> puis le 3306 (mysql / mariadb), sur la machine bdd - machine bdd sur mariadb
-
-# Quelle(s) règle(s) iptables allons nous provisionner sur l'interface LAN de chaque VM? Pourquoi?
-# -> nous allons provisionner les ports suivant : 22 pour pouvoir communiquer en ssh à l'intérieur de notre réseau
-# -> ainsi que les ports nécessaire au bon fonctionnement de nos services internes.
 
 # on affiche toutes nos interfaces comme ceci
 tailleTab=$(ip -br a | sed 's/ /%' | cut -d'%' -f1 | wc -l)
@@ -34,7 +25,6 @@ $i=0
 valid=true
 while [ $valid ]
 do
-	clear
 	echo "Quel est le numéro de l'interface où vous voulez ouvrir les ports passés en paramètres ?"
 	read choixInterface
 	echo "utilisateur sudo entrer : $choixInterface"
@@ -47,7 +37,22 @@ do
 done
 clear
 interface=$(ip -br a | sed 's/ /%' | cut -d'%' -f1 | sed -n "$choixInterface""p")
+
 echo "interface choisie : $interface"
+while [ $valid ]
+do
+	echo "Quel est le numéro de l'interface lan ?"
+	read choixInterfaceLan
+	echo "utilisateur sudo entrer : $choixInterfaceLan"
+	echo "cela vous convient-il ? oui(y)/non(n)"
+	read validation
+	if [ ${validation^^} == 'Y' ]
+	then
+		break
+	fi
+done
+interfaceLan=$(ip -br a | sed 's/ /%' | cut -d'%' -f1 | sed -n "$choixInterfaceLan""p")
+echo "interface choisie : $interfaceLan"
 
 ### --: on reset tout
 echo "[reset tables]"
@@ -63,25 +68,25 @@ ${IP} -P OUTPUT ACCEPT
 
 # on met les regles pour l'interface loopback uniquement
 echo "[accepts packets with local source ip adresses]"
-${IP} -t mangle -A PREROUTING -s 224.0.0.0/3 -i lo -j ACCEPT
-${IP} -t mangle -A PREROUTING -s 169.254.0.0/16 -i lo -j ACCEPT
-${IP} -t mangle -A PREROUTING -s 172.16.0.0/12 -i lo -j ACCEPT
-${IP} -t mangle -A PREROUTING -s 192.0.2.0/24 -i lo -j ACCEPT
-${IP} -t mangle -A PREROUTING -s 192.168.0.0/16 -i lo -j ACCEPT
-${IP} -t mangle -A PREROUTING -s 10.0.0.0/8 -i lo -j ACCEPT
-${IP} -t mangle -A PREROUTING -s 0.0.0.0/8 -i lo -j ACCEPT
-${IP} -t mangle -A PREROUTING -s 240.0.0.0/5 -i lo -j ACCEPT
-${IP} -t mangle -A PREROUTING -s 127.0.0.0/8 -i lo -j ACCEPT
+${IP} -t mangle -A PREROUTING -s 224.0.0.0/3 -i $interfaceLan -j ACCEPT
+${IP} -t mangle -A PREROUTING -s 169.254.0.0/16 -i $interfaceLan -j ACCEPT
+${IP} -t mangle -A PREROUTING -s 172.16.0.0/12 -i $interfaceLan -j ACCEPT
+${IP} -t mangle -A PREROUTING -s 192.0.2.0/24 -i $interfaceLan -j ACCEPT
+${IP} -t mangle -A PREROUTING -s 192.168.0.0/16 -i $interfaceLan -j ACCEPT
+${IP} -t mangle -A PREROUTING -s 10.0.0.0/8 -i $interfaceLan -j ACCEPT
+${IP} -t mangle -A PREROUTING -s 0.0.0.0/8 -i $interfaceLan -j ACCEPT
+${IP} -t mangle -A PREROUTING -s 240.0.0.0/5 -i $interfaceLan -j ACCEPT
+${IP} -t mangle -A PREROUTING -s 127.0.0.0/8 -i $interfaceLan -j ACCEPT
 # on bloque les ip privée pour notre interface qui sera face à internet, (on évite le spoofing)
-${IP} -t mangle -A PREROUTING -s 224.0.0.0/3 -i interface -j DROP
-${IP} -t mangle -A PREROUTING -s 169.254.0.0/16 -i interface -j DROP
-${IP} -t mangle -A PREROUTING -s 172.16.0.0/12 -i interface -j DROP
-${IP} -t mangle -A PREROUTING -s 192.0.2.0/24 -i interface -j DROP
-${IP} -t mangle -A PREROUTING -s 192.168.0.0/16 -i interface -j DROP
-${IP} -t mangle -A PREROUTING -s 10.0.0.0/8 -i interface -j DROP
-${IP} -t mangle -A PREROUTING -s 0.0.0.0/8 -i interface -j DROP
-${IP} -t mangle -A PREROUTING -s 240.0.0.0/5 -i interface -j DROP
-${IP} -t mangle -A PREROUTING -s 127.0.0.0/8 -i interface -j DROP
+${IP} -t mangle -A PREROUTING -s 224.0.0.0/3 -i $interface -j DROP
+${IP} -t mangle -A PREROUTING -s 169.254.0.0/16 -i $interface -j DROP
+${IP} -t mangle -A PREROUTING -s 172.16.0.0/12 -i $interface -j DROP
+${IP} -t mangle -A PREROUTING -s 192.0.2.0/24 -i $interface -j DROP
+${IP} -t mangle -A PREROUTING -s 192.168.0.0/16 -i $interface -j DROP
+${IP} -t mangle -A PREROUTING -s 10.0.0.0/8 -i $interface -j DROP
+${IP} -t mangle -A PREROUTING -s 0.0.0.0/8 -i $interface -j DROP
+${IP} -t mangle -A PREROUTING -s 240.0.0.0/5 -i $interface -j DROP
+${IP} -t mangle -A PREROUTING -s 127.0.0.0/8 -i $interface -j DROP
 
 ### 0: règles de bases :
 # Autoriser les flux en localhost
@@ -221,107 +226,19 @@ ${IP} -A INPUT -s 134.122.0.0/16 -j DROP
 ${IP} -A INPUT -s 138.197.0.0/16 -j DROP
 ${IP} -A INPUT -s 134.209.0.0/16 -j DROP
 
-### on drop le reste - (on fini par ça)
-${IP} -P INPUT -i $interface DROP
-
-# Sauvegarde & persistance des tables 
-apt install iptables-persistent -y
-${IP}-save > /etc/iptables/rules.v4
-
-# step 2 : 
-# -> parsage des logs et exports bdd
-# Les différentes adresses IP visitant notre site, ainsi que la fréquence de ces visites (i.e. le nombre de requêtes effectuées par ces IPs)
-echo 'nbVisite,ipSource' > TODOCHANGE.csv  | cat /var/log/apache2/tutorataccess.log | awk -F '[ ]+' '/^/ {print $1}' | sort -r | uniq -c | sort -rn | sed 's/^[ ]*//' >> TODOCHANGE.csv
-# Les URLs visitées le plus souvent
-echo 'nbVisite,adresseCible' > TODOCHANGE.csv | cat /var/log/apache2/tutorataccess.log | awk -F '["]+' '/ / {print $4}' | sort -n | uniq -c | egrep 'http' | sort -rn | sed 's/^[ ]*//' | sed 's/[ ]/,/g' >> TODOCHANGE.csv
-
-# todo mettre en place les variables nécessaires (mot de passe / nom de bdd, etc etc)
-# sur la machine bdd -> 
-mysql -u root -p"1heksn?yr" adventofcode -e"select * from \`2015\`;" | sed "s/'/\'/;s/\t/\",\"/g;s/^/\"/;s/$/\"/;s/\n//g" > exportbdd.csv
-scp exportbdd.csv  userapache@192.168.164.139:/home/userapache/
-
-# Step 3 :
 #Protection anti ddos
 #Les utilisateurs effectuant un certain nombre de requêtes dans un intervalle de temps donné ("DoS") - avec iptables
 ${IP} -A INPUT -p tcp -m conntrack --ctstate NEW -m limit --limit 20/s --limit-burst 20 -j ACCEPT
 ${IP} -A INPUT -p tcp -m conntrack --ctstate NEW -j DROP
 
 #Les utilisateurs effectuant un certain nombre de requêtes dans un intervalle de temps donné ("DoS") - avec fail2ban
+ipaddr=$(hostname -I)
 apt install fail2ban -y
 echo "[DEFAULT]
-ignoreip = 127.0.0.1/8
-bantime = 86400
+ignoreip = 127.0.0.1/8 $ipaddr
+bantime = 86400" > /etc/fail2ban/jail.local
 
-[apache]
-enabled  = true
-port     = http,https
-filter   = apache-auth
-logpath  = /var/log/apache2/*error.log
-maxretry = 3
-findtime = 600
-
-[apache-noscript]
-enabled  = true
-port     = http,https
-filter   = apache-noscript
-logpath  = /var/log/apache2/*error.log
-maxretry = 3
-findtime = 600
-
-[apache-overflows]
-enabled  = true
-port     = http,https
-filter   = apache-overflows
-logpath  = /var/log/apache2/*error.log
-maxretry = 2
-findtime = 600
-
-[apache-badbots]
-enabled  = true
-port     = http,https
-filter   = apache-badbots
-logpath  = /var/log/apache2/*error.log
-maxretry = 2
-findtime = 600" > /etc/fail2ban/jail.local
-
-# Les utilisateurs visitant un peu trop souvent une URL précise (au hasard, page de login - "Brute Force")
-# soit en empéchant le http ddos , sans faire de tri sur les url précises 
-echo "[http-get-dos]
-enabled = true
-port = http,https
-filter = http-get-dos
-logpath = /var/log/apache*/access.log
-maxretry = 400
-findtime = 400
-bantime = 200
-ignoreip = 192.168.43.193
-action = iptables[name=HTTP, port=http, protocol=tcp]
-
-[apache-wp-login]
-enabled = true
-port = http,https
-action = iptables[name=WP, port=http, protocol=tcp]
-filter = apache-wp-login
-logpath = /var/log/apache2/*error.log
-maxretry = 3
-bantime = 300
-ignoreip = <IP that need to whitelist> " >> /etc/fail2ban/jail.local
-
-echo "[Definition]
-failregex = <HOST>.*] \"POST /wp-login.php
-ignoreregex = " > /etc/fail2ban/filter.d/apache-wp-login
-
-echo "[Definition]
-failregex = ^<HOST> -.*\"(GET|POST).* 
-ignoreregex =" > /etc/fail2ban/filter.d/http-get-dos.conf
-# je n'ai pas de système de connexion mais voici comment cela fonctionne, 
-# il faut creer un nouveau fichier de conf qui va correspondre à notre règle personnalisée (qu'on s'occupera de tag via une regEX)
-# il suffit de creer ses propres règle, par exemple, pour wordpress, il existe une petite extention qui va s'occuper de nous log de la bonne façon les connexions
-# pour ensuite pouvoir, avec fail2ban, les détéctés facilement.
-# on pourrai également faire une selection de l'ip source & l'url cible, avec une regex et limité le nombre de requete.
-# les deux éxemples précédent sont génériques mais nous pouvons tout à fait faire une protection très précise.
-
-# Les petits rigolos essayant de se connecter en SSH sur notre serveur Web (idem)
+# Les petits rigolos essayant de se connecter en SSH sur notre serveur Web
 echo "[sshd]
 enabled = true
 port = ssh
@@ -332,3 +249,10 @@ findtime = 600" >> /etc/fail2ban/jail.local
 
 # on peux tester de simuler une attaque ddos avec 'nikto -h 192.168.43.193 -C all' par exemple
 systemctl restart fail2ban
+
+### on drop le reste - (on fini par ça)
+${IP} -P INPUT -i $interface DROP
+
+# Sauvegarde & persistance des tables 
+apt install iptables-persistent -y
+${IP}-save > /etc/iptables/rules.v4
