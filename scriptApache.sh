@@ -63,8 +63,8 @@ echo "<VirtualHost *:80>
 #ServerName $websiteName
 ServerAdmin $userApache@localhost
 
-ErrorLog ${APACHE_LOG_DIR}/$websiteName.log
-CustomLog ${APACHE_LOG_DIR}/$websiteName.log combined
+ErrorLog /var/log/apache2/$websiteName.log
+CustomLog /var/log/apache2/$websiteName.log combined
 
 Redirect permanent / https://$userIp
 </VirtualHost>" > /etc/apache2/sites-available/$websiteName.conf
@@ -75,8 +75,8 @@ echo "<VirtualHost *:443>
 	ServerAdmin $userApache@localhost
 	DocumentRoot /var/www/$repoName
 
-	ErrorLog ${APACHE_LOG_DIR}/$websiteName.log
-	CustomLog ${APACHE_LOG_DIR}/$websiteName.log combined
+	ErrorLog /var/log/apache2/$websiteName.log
+	CustomLog /var/log/apache2/$websiteName.log combined
 
 	SSLEngine on
 	SSLCertificateFile /etc/ssl/certs/$websiteName.crt
