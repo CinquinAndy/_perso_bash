@@ -15,7 +15,7 @@ ${IPT} -P INPUT ACCEPT
 ${IPT} -P FORWARD ACCEPT
 ${IPT} -P OUTPUT ACCEPT
 
-### 0: règles de bases :
+### règles de bases :
 # Autoriser les flux en localhost
 echo "[accept local]"
 ${IPT} -A INPUT -i lo -j ACCEPT
@@ -42,6 +42,7 @@ ${IPT} -A INPUT -p tcp -m tcp --sport 443 -j ACCEPT
 ${IPT} -A OUTPUT -p tcp -m tcp --dport 443 -j ACCEPT
 ${IPT} -A OUTPUT -p tcp -m tcp --sport 443 -j ACCEPT
 
+# Autoriser le port de mariadb
 echo "[accept mariadb]"
 ${IPT} -A INPUT -p tcp -m tcp --dport 3306 -j ACCEPT
 ${IPT} -A INPUT -p tcp -m tcp --sport 3306 -j ACCEPT
@@ -54,17 +55,17 @@ ${IPT} -A OUTPUT -p udp -m udp --dport 53 -j ACCEPT
 ${IPT} -A OUTPUT -p udp -m udp --sport 53 -j ACCEPT
 
 # Règles bonus : 
-### 1: Drop les paquets invalids, qui ne sont pas SYN et qui ne mene a aucune connexion tcp établie (established)### 
+### Drop les paquets invalids, qui ne sont pas SYN et qui ne mene a aucune connexion tcp établie (established)### 
 echo "[drop invalid packets]"
 ${IPT} -t mangle -A PREROUTING -m conntrack --ctstate INVALID -j DROP
 
-### 2: Même principe que la première, mais la complète, dans certain cas, le première règle ne filtre pas tout, celle-c règle ce problème.
+### Même principe que la première, mais la complète, dans certain cas, le première règle ne filtre pas tout, celle-c règle ce problème.
 ${IPT} -t mangle -A PREROUTING -p tcp ! --syn -m conntrack --ctstate NEW -j DROP
 
-### 3: Drop SYN les paquets syn qui sont ‘suspicieux’, avec des valeurs qui n’ont pas forcément de sens ou peux communes, aide à bloquer les attaques SYN stupides juste à base de spam ### 
+### Drop SYN les paquets syn qui sont ‘suspicieux’, avec des valeurs qui n’ont pas forcément de sens ou peux communes, aide à bloquer les attaques SYN stupides juste à base de spam ### 
 ${IPT} -t mangle -A PREROUTING -p tcp -m conntrack --ctstate NEW -m tcpmss ! --mss 536:65535 -j DROP
 
-### 4: Bloque les paquets avec des TCP flags bizarres / bugués, les flags tcp légitimes n’utiliseront jamais ce genre de combinaisons
+### Bloque les paquets avec des TCP flags bizarres / bugués, les flags tcp légitimes n’utiliseront jamais ce genre de combinaisons
 echo "[drop packets with suspiscious flags]"
 ${IPT} -t mangle -A PREROUTING -p tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
 ${IPT} -t mangle -A PREROUTING -p tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
@@ -80,42 +81,29 @@ ${IPT} -t mangle -A PREROUTING -p tcp --tcp-flags ALL FIN,PSH,URG -j DROP
 ${IPT} -t mangle -A PREROUTING -p tcp --tcp-flags ALL SYN,FIN,PSH,URG -j DROP
 ${IPT} -t mangle -A PREROUTING -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP
 
-### 5: bloques les connexions d’ip interne / (spoofing ? ) ### -> attention a pas vous empêchez votre propre connexion si vous êtes sur une vm
-echo "[drop packets with local source ip adresses]"
-${IPT} -t mangle -A PREROUTING -s 224.0.0.0/3 -j DROP
-${IPT} -t mangle -A PREROUTING -s 169.254.0.0/16 -j DROP
-${IPT} -t mangle -A PREROUTING -s 172.16.0.0/12 -j DROP
-#${IPT} -t mangle -A PREROUTING -s 192.0.2.0/24 -j DROP
-#${IPT} -t mangle -A PREROUTING -s 192.168.0.0/16 -j DROP
-${IPT} -t mangle -A PREROUTING -s 10.0.0.0/8 -j DROP
-${IPT} -t mangle -A PREROUTING -s 0.0.0.0/8 -j DROP
-${IPT} -t mangle -A PREROUTING -s 240.0.0.0/5 -j DROP
-${IPT} -t mangle -A PREROUTING -s 127.0.0.0/8 ! -i lo -j DROP
-
-### 6: Drop ICMP (en général on en as pas besoin) ### 
+### Drop ICMP (en général on en as pas besoin) ### 
 echo "[drop icmp (classic)]"
 ${IPT} -t mangle -A PREROUTING -p icmp -j DROP
-### 7: Bloques les paquets fragmentés, normalement on en as pas besoins, et les bloqués vont répartir la charges lords d’un spam udp 
+### Bloques les paquets fragmentés, normalement on en as pas besoins, et les bloqués vont répartir la charges lords d’un spam udp 
 # (udp fragmentation flood), mais la plupart du temps, les attaques de ce types utilises le nombre de requête pour mettre à genou notre carte réseau,
 # cette règle est donc pas forcément utile et relativement optionnelle
 ${IPT} -t mangle -A PREROUTING -f -j DROP
 
-### 8: Limites les connexions par ip ### 
+### Limites les connexions par ip ### 
 echo "[others rules]"
 ${IPT} -A INPUT -p tcp -m connlimit --connlimit-above 111 -j REJECT --reject-with tcp-reset
 
-### 9: Limites les paquets RST ###
+### Limites les paquets RST ###
 ${IPT} -A INPUT -p tcp --tcp-flags RST RST -m limit --limit 2/s --limit-burst 2 -j ACCEPT
 ${IPT} -A INPUT -p tcp --tcp-flags RST RST -j DROP
 
-### 10: Limites les connexions TCP par secondes par IP source
+### Limites les connexions TCP par secondes par IP source
 ${IPT} -A INPUT -p tcp -m conntrack --ctstate NEW -m limit --limit 60/s --limit-burst 20 -j ACCEPT
 ${IPT} -A INPUT -p tcp -m conntrack --ctstate NEW -j DROP
 
-### 11 : SSH protection anti brute-force ###
+### SSH protection anti brute-force ###
 ${IPT} -A INPUT -p tcp --dport ssh -m conntrack --ctstate NEW -m recent --set
 ${IPT} -A INPUT -p tcp --dport ssh -m conntrack --ctstate NEW -m recent --update --seconds 60 --hitcount 10 -j DROP
-
 
 ### Protection contre le port scanning ###
 echo "[block port scanning]"
