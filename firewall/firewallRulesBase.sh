@@ -113,3 +113,6 @@ ${IPT} -A port-scanning -j DROP
 
 ### on drop le reste
 ${IPT} -P INPUT DROP
+
+apt install iptables-persistent -y
+${IPT}-save > /etc/iptables/rules.v4
