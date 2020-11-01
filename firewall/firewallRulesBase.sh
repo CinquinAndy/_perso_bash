@@ -11,9 +11,9 @@ ${IPT} -t nat -F
 ${IPT} -t nat -X
 ${IPT} -t mangle -F
 ${IPT} -t mangle -X
-${IPT} -P INPUT ACCEPT
-${IPT} -P FORWARD ACCEPT
-${IPT} -P OUTPUT ACCEPT
+${IPT} -P INPUT DROP
+${IPT} -P FORWARD DROP
+${IPT} -P OUTPUT DROP
 
 ### règles de bases :
 # Autoriser les flux en localhost
@@ -110,9 +110,6 @@ echo "[block port scanning]"
 ${IPT} -N port-scanning
 ${IPT} -A port-scanning -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit --limit 1/s --limit-burst 2 -j RETURN
 ${IPT} -A port-scanning -j DROP
-
-### on drop le reste
-${IPT} -P INPUT DROP
 
 apt install iptables-persistent -y
 ${IPT}-save > /etc/iptables/rules.v4
