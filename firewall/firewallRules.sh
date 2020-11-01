@@ -11,9 +11,9 @@ ${IPT} -t nat -F
 ${IPT} -t nat -X
 ${IPT} -t mangle -F
 ${IPT} -t mangle -X
-${IPT} -P INPUT ACCEPT
-${IPT} -P FORWARD ACCEPT
-${IPT} -P OUTPUT ACCEPT
+${IPT} -P INPUT DROP
+${IPT} -P FORWARD DROP
+${IPT} -P OUTPUT DROP
 
 ### 0: règles de bases :
 # Autoriser les flux en localhost
